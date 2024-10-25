@@ -21,6 +21,7 @@ In a terminal, once in the main directory, run the command `streamlit run .\app.
 
 * Prompt engineering to ensure the bot can handle the complex relationships between specific medical ontologies.
 * UI design - specifically how the codes are returned.
+* Gracefully handle the ICD API access token(s).
 
 ### Gallery
 
