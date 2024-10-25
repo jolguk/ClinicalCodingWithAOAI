@@ -5,7 +5,7 @@ A simple Streamlit application, powered by AOAI, that creates a clinical coding 
 
 * Install the dependencies documented in the requirements file,
 * Create an account for the ICD-11 API here: https://icd.who.int/icdapi,
-* Create an Azure OpenAI service with a GPT-4 model deployed`,
+* Create an Azure OpenAI service with a GPT-4 model deployed,
 * Populate an `.env` file with the following information taken from the relevant places:
     * AZURE_OPENAI_ENDPOINT,
     * AZURE_OPENAI_KEY,
