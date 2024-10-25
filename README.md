@@ -23,6 +23,9 @@ In a terminal, once in the main directory, run the command `streamlit run .\app.
 * UI design - specifically how the codes are returned.
 * Gracefully handle the ICD API access token(s).
 
+### References
+* https://github.com/IHTSDO/openai-demo
+
 ### Gallery
 
 ![UI design](./ui_snap.png)
