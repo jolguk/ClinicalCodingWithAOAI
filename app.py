@@ -90,6 +90,7 @@ def generate_response(prompt):
         }
     ]
     st.session_state["messages"].append({"role": "user", "content": prompt})
+    completion = None  # Initialize the variable
     try:
         client = AzureOpenAI(api_key = azure_openai_key, api_version="2024-02-01", azure_endpoint = azure_openai_endpoint)
         completion = client.chat.completions.create(
