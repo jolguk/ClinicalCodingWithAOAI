@@ -151,6 +151,39 @@ def query_icd_11_api(input: str):
 
 st.title("LLM function calling example for the ICD-11 API (powered by GPT-4)")
 
+# Streamlit UI
+st.title("Clinical Coding with OpenAI")
+st.header("Enter your prompt below:")
+
+# Text input for the prompt
+prompt = st.text_area("Prompt", height=150)
+
+# Button to submit the prompt
+if st.button("Get Response"):
+    if prompt:
+        with st.spinner("Generating response..."):
+            response = generate_response(prompt)
+            st.success("Response generated!")
+            st.text_area("Response", value=response, height=150)
+    else:
+        st.error("Please enter a prompt.")
+
+# Additional UI elements
+st.sidebar.title("Settings")
+st.sidebar.write("Adjust your settings here.")
+
+# Example of a slider
+max_tokens = st.sidebar.slider("Max Tokens", min_value=50, max_value=500, value=150)
+
+# Example of a checkbox
+show_raw_response = st.sidebar.checkbox("Show raw response")
+
+# Display raw response if checkbox is checked
+if show_raw_response and 'response' in locals():
+    st.sidebar.write(response)
+
+
+
 # container for chat history
 response_container = st.container()
 # container for text box
