@@ -6,11 +6,29 @@ import requests
 from openai import AzureOpenAI
 import streamlit as st
 from streamlit_chat import message
+import openai
+from azure.identity import DefaultAzureCredential
+from azure.keyvault.secrets import SecretClient
+import os
 
 # Load environment variables
 ENV = dotenv.dotenv_values(".env")
 with st.sidebar.expander("Environment Variables"):
     st.write(ENV)
+
+def get_secret_from_key_vault(vault_url, secret_name):
+    credential = DefaultAzureCredential()
+    client = SecretClient(vault_url=vault_url, credential=credential)
+    secret = client.get_secret(secret_name)
+    return secret.value
+
+# Set up Key Vault details
+key_vault_url = os.getenv('AZURE_KEY_VAULT_URL')
+
+# Retrieve secrets
+azure_openai_key = get_secret_from_key_vault(key_vault_url, 'AZUREOPENAIKEY')
+azure_openai_endpoint = get_secret_from_key_vault(key_vault_url, 'AZUREOPENAIENDPOINT')
+azure_openai_deployment_name = get_secret_from_key_vault(key_vault_url, 'AZUREOPENAIDEPLOYMENTNAME')
 
 default_prompt = """
 You an assistant to a clinical coder, it is your role to suggest potential codes based on the user input - it is not your job to actually code the input. Under no circumstances should you guess or give any sort of medical advice whether that relates to coding or anything else.
@@ -66,9 +84,9 @@ def generate_response(prompt):
     ]
     st.session_state["messages"].append({"role": "user", "content": prompt})
     try:
-        client = AzureOpenAI(api_key = ENV["AZURE_OPENAI_KEY"], api_version="2024-02-01", azure_endpoint = ENV["AZURE_OPENAI_ENDPOINT"])
+        client = AzureOpenAI(api_key = azure_openai_key, api_version="2024-02-01", azure_endpoint = ENV["AZURE_OPENAI_ENDPOINT"])
         completion = client.chat.completions.create(
-            model=ENV["AZURE_OPENAI_DEPLOYMENT_NAME"],
+            model=azure_openai_deployment_name,
             messages=st.session_state["messages"],
             tools=tools
         ) 
@@ -95,7 +113,7 @@ def generate_response(prompt):
                 }
             )
             second_response = client.chat.completions.create(
-                model=ENV["AZURE_OPENAI_DEPLOYMENT_NAME"],
+                model=azure_openai_deployment_name,
                 messages=st.session_state["messages"]
             ).choices[0].message.content
             total_tokens = completion.usage.total_tokens
@@ -200,7 +218,7 @@ with container:
         )
         st.session_state["past"].append(user_input)
         st.session_state["generated"].append(output)
-        st.session_state["model_name"].append(ENV["AZURE_OPENAI_DEPLOYMENT_NAME"])
+        st.session_state["model_name"].append(azure_openai_deployment_name)
         #import pdb; pdb.set_trace()
 
 if st.session_state["generated"]:

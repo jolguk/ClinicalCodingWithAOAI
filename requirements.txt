@@ -2,3 +2,5 @@ streamlit
 streamlit_chat
 openai
 python-dotenv
+azure-identity
+azure-keyvault-secrets
