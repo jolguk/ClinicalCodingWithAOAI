@@ -34,6 +34,8 @@ if not key_vault_url:
 azure_openai_key = get_secret_from_key_vault(key_vault_url, 'AZUREOPENAIKEY')
 azure_openai_endpoint = get_secret_from_key_vault(key_vault_url, 'AZUREOPENAIENDPOINT')
 azure_openai_deployment_name = get_secret_from_key_vault(key_vault_url, 'AZUREOPENAIDEPLOYMENTNAME')
+icd_client = get_secret_from_key_vault(key_vault_url, 'ICD_CLIENT')
+icd_secret = get_secret_from_key_vault(key_vault_url, 'ICD_KEY')
 
 default_prompt = """
 You an assistant to a clinical coder, it is your role to suggest potential codes based on the user input - it is not your job to actually code the input. Under no circumstances should you guess or give any sort of medical advice whether that relates to coding or anything else.
@@ -135,8 +137,8 @@ def generate_response(prompt):
     completion_tokens = completion.usage.completion_tokens
     return response, total_tokens, prompt_tokens, completion_tokens
 
-ICD_KEY = ENV['ICD_KEY']
-ICD_CLIENT = ENV['ICD_CLIENT']
+ICD_KEY = icd_secret
+ICD_CLIENT = icd_client
 TOKEN_ENDPOINT = 'https://icdaccessmanagement.who.int/connect/token'
 SCOPE = 'icdapi_access'
 GRANT_TYPE = 'client_credentials'
