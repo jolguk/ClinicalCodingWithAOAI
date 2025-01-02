@@ -9,12 +9,15 @@ from streamlit_chat import message
 import openai
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
+from dotenv import load_dotenv
 import os
 
 # Load environment variables
 ENV = dotenv.dotenv_values(".env")
 with st.sidebar.expander("Environment Variables"):
     st.write(ENV)
+
+load_dotenv()
 
 def get_secret_from_key_vault(vault_url, secret_name):
     credential = DefaultAzureCredential()
@@ -24,7 +27,9 @@ def get_secret_from_key_vault(vault_url, secret_name):
 
 # Set up Key Vault details
 key_vault_url = os.getenv('AZURE_KEY_VAULT_URL')
-
+if not key_vault_url:
+    st.error("AZURE_KEY_VAULT_URL environment variable is not set.")
+    st.stop()
 # Retrieve secrets
 azure_openai_key = get_secret_from_key_vault(key_vault_url, 'AZUREOPENAIKEY')
 azure_openai_endpoint = get_secret_from_key_vault(key_vault_url, 'AZUREOPENAIENDPOINT')
@@ -84,7 +89,7 @@ def generate_response(prompt):
     ]
     st.session_state["messages"].append({"role": "user", "content": prompt})
     try:
-        client = AzureOpenAI(api_key = azure_openai_key, api_version="2024-02-01", azure_endpoint = ENV["AZURE_OPENAI_ENDPOINT"])
+        client = AzureOpenAI(api_key = azure_openai_key, api_version="2024-02-01", azure_endpoint = azure_openai_endpoint)
         completion = client.chat.completions.create(
             model=azure_openai_deployment_name,
             messages=st.session_state["messages"],
