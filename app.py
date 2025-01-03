@@ -138,8 +138,8 @@ def generate_response(prompt):
     completion_tokens = completion.usage.completion_tokens
     return response, total_tokens, prompt_tokens, completion_tokens
 
-ICD_KEY = icd_secret
-ICD_CLIENT = icd_client
+ICD_KEY = ENV['ICD_KEY']
+ICD_CLIENT = ENV['ICD_CLIENT']
 TOKEN_ENDPOINT = 'https://icdaccessmanagement.who.int/connect/token'
 SCOPE = 'icdapi_access'
 GRANT_TYPE = 'client_credentials'
